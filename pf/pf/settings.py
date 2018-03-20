@@ -25,7 +25,8 @@ SECRET_KEY = 'a75*lx9en%ci6pgnz4!294&hy#kqmjk^*g#7m6m7t*@fr!%5n$'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["mephist0.pythonanywhere.com"]
+ALLOWED_HOSTS = ["mephist0.pythonanywhere.com",
+                 "127.0.0.1"]
 
 
 # Application definition
@@ -33,6 +34,7 @@ ALLOWED_HOSTS = ["mephist0.pythonanywhere.com"]
 INSTALLED_APPS = [
     'search.apps.SearchConfig',
     'django_filters',
+    'widget_tweaks',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

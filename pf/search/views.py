@@ -14,7 +14,7 @@ from .filters import SearchFilter
 #    return HttpResponse("<h>This is the search homepage</h>")
 
 def index(request):
-    all_courses = Search.objects.all()
+    all_courses = Search.objects.all()[:5]
     context = {
            'all_courses':all_courses
            }
@@ -51,5 +51,6 @@ def detail(request, search_id):
 def searchlist(request):
     # template = loader.get_template('search/searchlist.html')
     all_courses = Search.objects.all()
+    # all_courses = Search.objects.exclude(id>10)
     course_filter = SearchFilter(request.GET, queryset=all_courses)
     return render(request, 'search/searchlist.html', {'filter': course_filter})

@@ -1,28 +1,28 @@
 {% extends 'search/base.html' %}
 
+{% load widget_tweaks %}
+
 {% block content %}
+<!--
     <form action="" method="get">
         {{ filter.form.as_p }}
         <input type="submit" />
     </form>
     {% for obj in filter.qs %}
-        {{ obj.level }} - ${{ obj.TITLE }}<br />
+        {{ obj.level }} {{ obj.TITLE }}<br />
     {% endfor %}
-{% endblock %}
-
-
-
-
-<!--
-
-  <form method="get">
+-->
+<form method="get">
     {{ filter.form.as_p }}
     <button type="submit">Search</button>
   </form>
+
+
   <ul>
-  {% for search in filter.qs %}
-    <li>{{ search.level }} - {{ search.TITLE }}</li>
+  {% for obj in filter.qs %}
+    <li> {{ obj.level }} {{ obj.TITLE }} </li>
   {% endfor %}
   </ul>
 
--->
+{% endblock %}
+

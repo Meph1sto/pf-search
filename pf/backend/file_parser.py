@@ -49,13 +49,15 @@ with open(join(data_path, 'KISAIM.csv')) as f:
 # Open CSV file containing location of courses codes (LOCNAME)
 # And load to memory
 d_course_locs = collections.defaultdict(list)
+d_course_country = collections.defaultdict(list)
 with open(join(data_path, 'LOCATION.csv')) as f:
     reader = csv.reader(f)
     for _ in reader:
         UKPRN = _[0]
         LOCNAME = _[4]
+        LOCCOUNTRY = _[9]
         d_course_locs[UKPRN].append(LOCNAME)
-
+        d_course_country[UKPRN].append(LOCCOUNTRY)
 #%%
 # Helper lookup functions
 
@@ -72,12 +74,30 @@ def get_course_level(KISAIMCODE):
 # Get course location from UKPRN
 def get_course_location(UKPRN):
     return str(d_course_locs[UKPRN])
+
+# Get course country from UKPRN
+def get_course_country(UKPRN):
+    return str(d_course_country[UKPRN])
+
+def get_country_code(LOCCOUNTRY):
+    if LOCCOUNTRY == "XF":
+        country = "England"
+    elif LOCCOUNTRY == "XI":
+        country = "Wales"
+        print (country)
+    elif LOCCOUNTRY == "XG":
+        country = "Northern Ireland"
+    elif LOCCOUNTRY == "XH":
+        country = "Scotland"
+    else:
+        country = "UK"
+    return str(country)
         
 #%%        
-    
 
 # Set up Db access
 conn = sqlite3.connect(join(db_path, 'db.sqlite3'))
+conn.text_factory = lambda x: unicode(x, 'utf-8', 'ignore')
 c = conn.cursor()
 print ('DB open for business')
 
@@ -89,9 +109,7 @@ print ('DB open for business')
 # And load to memory
 with open(join(data_path, 'KISCOURSE.csv')) as f:
     reader = csv.reader(f)
-    ids=0
     for _ in reader:
-        ids+=1
         UKPRN = _[1]
         UNI_NAME = get_uni_name(UKPRN)[2:-2]
         KISCOURSEID = _[14]
@@ -99,31 +117,19 @@ with open(join(data_path, 'KISCOURSE.csv')) as f:
         KISAIMCODE = _[32]
         level = get_course_level(KISAIMCODE)[2:-2]
         location = get_course_location(UKPRN)[2:-2]
+        country = get_course_country(UKPRN)[2:-2]
+        country = get_country_code(country)
+        print (country)
+
 #        print (KISCOURSEID, level, TITLE, UNI_NAME, location)
 #        my_list.append((KISCOURSEID, level, TITLE, UNI_NAME, location))
-        c.execute("INSERT INTO search_search VALUES (?,?,?,?,?,?)",  (None, KISCOURSEID, level, TITLE, UNI_NAME, location))
+        c.execute("INSERT INTO search_search VALUES (?,?,?,?,?,?,?)",  (None, KISCOURSEID, level, TITLE, UNI_NAME, location, country))
 conn.commit()
 print ('DB commit ok')
 conn.close()
 print ('DB closed for business')
 #%%
 
-
-# Add data to SQLite
-#print (len(my_list))
-#for item in my_list:
-#    NULL = None
-#    print (str(item[0]))
-#    KISCOURSEID = item[0]
-##    print (KISCOURSEID)
-#    level = item[1]
-#    TITLE = item[2]
-#    UNI_NAME = item[3]
-#    location = item[4]
-##  c.execute('insert into search_search values (?,?,?,?,?)', item)
-#    c.execute("INSERT INTO search_search VALUES ('id', 'KISCOURSEID', 'level', 'TITLE', 'UNI_NAME', 'location')", (NULL, KISCOURSEID, level, TITLE, UNI_NAME, location))
-#conn.commit()
-#conn.close()
 
   
 

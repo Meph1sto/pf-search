@@ -12,6 +12,7 @@ class Search(models.Model):
     TITLE = models.CharField(max_length=100)
     UNI_NAME = models.CharField(max_length=100)
     location = models.CharField(max_length=100)
+    country = models.CharField(max_length=100)
 
 
 class Location(models.Model):
