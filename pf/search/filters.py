@@ -24,7 +24,12 @@ class SearchFilter(django_filters.FilterSet):
 
     class Meta:
         model = Search
-        fields = ['level', 'TITLE', 'UNI_NAME', 'location', 'country']
+        fields = ['level', 'TITLE', 'UNI_NAME', 'country']
+
+SearchFilter.base_filters['level'].label = 'Level'
+SearchFilter.base_filters['TITLE'].label = 'Subject'
+SearchFilter.base_filters['UNI_NAME'].label = 'University'
+SearchFilter.base_filters['country'].label = 'Country'
 
     # def my_custom_filter(self, queryset, TITLE, value):
     #     return queryset.filter(**{

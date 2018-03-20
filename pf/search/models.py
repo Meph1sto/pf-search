@@ -5,7 +5,7 @@ from django.db import models
 class Search(models.Model):
     
     def __str__(self):
-        return self.level + " " + self.TITLE + " " + self.UNI_NAME + " " + self.location
+        return self.level + " " + self.TITLE + " " + self.UNI_NAME + " " + self.country
 
     KISCOURSEID = models.CharField(max_length=100)
     level = models.CharField(max_length=100)

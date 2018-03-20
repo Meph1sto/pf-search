@@ -18,11 +18,28 @@
   </form>
 
 
-  <ul>
-  {% for obj in filter.qs %}
-    <li> {{ obj.level }} {{ obj.TITLE }} </li>
-  {% endfor %}
-  </ul>
 
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th>Level</th>
+        <th>Subject</th>
+        <th>University</th>
+        <th>Country</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for obj in filter.qs %}
+        <tr>
+          <td>{{ obj.level }}</td>
+          <td>{{ obj.TITLE }}</td>
+          <td>{{ obj.UNI_NAME }}</td>
+          <td>{{ obj.country }}</td>
+
+            {% endfor %}
+          </td>
+        </tr>
+    </tbody>
+  </table>
 {% endblock %}
 
