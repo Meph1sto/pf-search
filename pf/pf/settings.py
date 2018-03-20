@@ -25,7 +25,7 @@ SECRET_KEY = 'a75*lx9en%ci6pgnz4!294&hy#kqmjk^*g#7m6m7t*@fr!%5n$'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["mephist0.pythonanywhere.com"]
 
 
 # Application definition
