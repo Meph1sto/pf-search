@@ -1,0 +1,11 @@
+{% extends 'search/base.html' %}
+
+{% block content %}
+    <ul>
+    {% for search in all_courses %}
+        <li><a href="{% url 'search:detail' search.id %}">{{search.TITLE}}</a> </li>
+    {% endfor %}
+    </ul>
+{% endblock %}
+
+
