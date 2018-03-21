@@ -14,6 +14,15 @@ import csv
 import sqlite3
 import os
 
+
+# api_key = 'AIzaSyBp2MmttlmRR9N0INDCUhbptIS-hMJBA8c'
+# api_key = 'AIzaSyCVUQwqpKwou-C55zJLKLnjoUF34APFrss'
+# api_key = 'AIzaSyAnfBdqLYO2KZ1x7ckYT46FLuze9rM1IzY'
+api_key = 'AIzaSyD6a4TgmMWUJLixAt0kcsnSOCqGpsgaxKQ'
+from geopy.geocoders import GoogleV3
+geolocator = GoogleV3(api_key)
+
+
 # Set up file paths
 curr_path = getcwd()
 data_path = join(curr_path, 'data')
@@ -28,6 +37,7 @@ db_path = join(base_path, 'pf')
 # And load to memory
 d_uni_names = collections.defaultdict(list)
 with open(join(data_path, 'UNISTATS_UKPRN_lookup_20160901.csv')) as f:
+    next(f)  # skip header line
     reader = csv.reader(f)
     for _ in reader:
         UKPRN = _[0]
@@ -39,6 +49,7 @@ with open(join(data_path, 'UNISTATS_UKPRN_lookup_20160901.csv')) as f:
 # And load to memory
 d_course_codes = collections.defaultdict(list)
 with open(join(data_path, 'KISAIM.csv')) as f:
+    next(f)  # skip header line
     reader = csv.reader(f)
     for _ in reader:
         KISAIMCODE = _[0]
@@ -46,18 +57,40 @@ with open(join(data_path, 'KISAIM.csv')) as f:
         d_course_codes[KISAIMCODE].append(KISAIMLABEL)
 
 
-# Open CSV file containing location of courses codes (LOCNAME)
+# Open CSV file containing geo location of courses codes (LOCNAME)
 # And load to memory
-d_course_locs = collections.defaultdict(list)
+d_course_county = collections.defaultdict(list)
 d_course_country = collections.defaultdict(list)
+
+
+# Google Maps API parser
+def get_component(location, component_type):
+    try:
+        for component in location.raw['address_components']:
+            if component_type in component['types']:
+                return (component['long_name']).encode('utf-8')
+    except AttributeError:
+        return ''
+        pass
+
 with open(join(data_path, 'LOCATION.csv')) as f:
+    next(f) # skip header line
     reader = csv.reader(f)
     for _ in reader:
         UKPRN = _[0]
-        LOCNAME = _[4]
-        LOCCOUNTRY = _[9]
-        d_course_locs[UKPRN].append(LOCNAME)
-        d_course_country[UKPRN].append(LOCCOUNTRY)
+        LAT = _[6]
+        LONG = _[7]
+        geoloc = str(LAT +','+LONG)
+        location = geolocator.reverse(geoloc, timeout=10, exactly_one=True)
+        county = get_component(location, 'administrative_area_level_2')
+        country = get_component(location, 'administrative_area_level_1')
+
+        if UKPRN not in d_course_county:
+            d_course_county[UKPRN].append(county)
+
+        if UKPRN not in d_course_country:
+            d_course_country[UKPRN].append(country)
+
 #%%
 # Helper lookup functions
 
@@ -69,31 +102,18 @@ def get_uni_name(UKPRN):
 # Get course level (BA etc.) from KISAIMCODE
 def get_course_level(KISAIMCODE):
     return str(d_course_codes[KISAIMCODE])
-       
-        
-# Get course location from UKPRN
-def get_course_location(UKPRN):
-    return str(d_course_locs[UKPRN])
+
+
+# Get course county from UKPRN
+def get_course_county(UKPRN):
+    return str(d_course_county[UKPRN])
+
 
 # Get course country from UKPRN
 def get_course_country(UKPRN):
     return str(d_course_country[UKPRN])
 
-def get_country_code(LOCCOUNTRY):
-    if LOCCOUNTRY == "XF":
-        country = "England"
-    elif LOCCOUNTRY == "XI":
-        country = "Wales"
-        print (country)
-    elif LOCCOUNTRY == "XG":
-        country = "Northern Ireland"
-    elif LOCCOUNTRY == "XH":
-        country = "Scotland"
-    else:
-        country = "UK"
-    return str(country)
-        
-#%%        
+#%%
 
 # Set up Db access
 conn = sqlite3.connect(join(db_path, 'db.sqlite3'))
@@ -101,14 +121,11 @@ conn.text_factory = lambda x: unicode(x, 'utf-8', 'ignore')
 c = conn.cursor()
 print ('DB open for business')
 
-
-# Create list for storage pre input to sqlite
-#my_list = []
-
 # Open CSV file KISCOURSE
 # And load to memory
 with open(join(data_path, 'KISCOURSE.csv')) as f:
     reader = csv.reader(f)
+    next(f)  # skip header line
     for _ in reader:
         UKPRN = _[1]
         UNI_NAME = get_uni_name(UKPRN)[2:-2]
@@ -116,24 +133,12 @@ with open(join(data_path, 'KISCOURSE.csv')) as f:
         TITLE = _[27]
         KISAIMCODE = _[32]
         level = get_course_level(KISAIMCODE)[2:-2]
-        location = get_course_location(UKPRN)[2:-2]
+        county = get_course_county(UKPRN)[2:-2]
         country = get_course_country(UKPRN)[2:-2]
-        country = get_country_code(country)
-        print (country)
 
-#        print (KISCOURSEID, level, TITLE, UNI_NAME, location)
-#        my_list.append((KISCOURSEID, level, TITLE, UNI_NAME, location))
-        c.execute("INSERT INTO search_search VALUES (?,?,?,?,?,?,?)",  (None, KISCOURSEID, level, TITLE, UNI_NAME, location, country))
+        print (county, country)
+        c.execute("INSERT INTO search_search VALUES (?,?,?,?,?,?,?)",  (None, KISCOURSEID, level, TITLE, UNI_NAME, county, country))
 conn.commit()
 print ('DB commit ok')
 conn.close()
 print ('DB closed for business')
-#%%
-
-
-  
-
-
-
-
-

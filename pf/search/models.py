@@ -11,7 +11,7 @@ class Search(models.Model):
     level = models.CharField(max_length=100)
     TITLE = models.CharField(max_length=100)
     UNI_NAME = models.CharField(max_length=100)
-    location = models.CharField(max_length=100)
+    county = models.CharField(max_length=100)
     country = models.CharField(max_length=100)
 
 

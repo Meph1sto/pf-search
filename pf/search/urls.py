@@ -33,7 +33,7 @@ app_name = 'search'
 urlpatterns = [
     # url(r'^search/', views.index, name='index'),
     url(r'^$', views.index, name='index'),
-    url(r'^searchlist/$', views.searchlist),
+    url(r'^searchlist/$', views.searchlist, name='searchlist'),
     # url(r'^searchlist/$', FilterView.as_view(model=Search)),
     # url(r'^searchlist/$', object_filter, {'model': Search}),
 
