@@ -1,0 +1,219 @@
+{# templates/search/searchtree.html #}
+{% extends "search/base.html" %}
+{% load staticfiles %}
+{% load i18n %}
+
+{% block sidebar %}
+<div class="filters panel-group" id="accordion">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h6 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion" href="#collapseLevels">
+                    {% trans "Filter by level" %}
+                </a>
+            </h6>
+        </div>
+        <div id="collapseLevels" class="panel-collapse collapse in">
+            <div class="panel-body">
+                <div class="list-group">
+                    <a class="list-group-item{% if not facets.selected.level %} active{% endif %}" href="{% modify_query 'level' 'page' %}">{% trans "All" %}</a>
+                    {% for cat in facets.categories.levels %}
+                        <a class="list-group-item{% if facets.selected.level == cat %} active{% endif %}" href="{% modify_query 'page' level=cat.pk %}">{{ cat }}</a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h6 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion" href="#collapseSubjects">
+                    {% trans "Filter by Subject" %}
+                </a>
+            </h6>
+        </div>
+        <div id="collapseSubjects" class="panel-collapse collapse">
+            <div class="panel-body">
+                <div class="list-group">
+                    <a class="list-group-item{% if not facets.selected.TITLE %} active{% endif %}" href="{% modify_query 'TITLE' 'page' %}">{% trans "All" %}</a>
+                    {% for cat in facets.categories.subjects %}
+                        <a class="list-group-item{% if facets.selected.TITLE == cat %} active{% endif %}" href="{% modify_query 'page' TITLE=cat.pk %}">{{ cat }}</a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h6 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion" href="#collapseUniversities">
+                    {% trans "Filter by University" %}
+                </a>
+            </h6>
+        </div>
+        <div id="collapseUniversities" class="panel-collapse collapse">
+            <div class="panel-body">
+                <div class="list-group">
+                    <a class="list-group-item{% if not facets.selected.UNI_NAME %} active{% endif %}" href="{% modify_query 'UNI_NAME' 'page' %}">{% trans "All" %}</a>
+                    {% for cat in facets.categories.universities %}
+                        <a class="list-group-item{% if facets.selected.UNI_NAME == cat %} active{% endif %}" href="{% modify_query 'page' UNI_NAME=cat.pk %}">{{ cat }}</a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h6 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion" href="#collapseCountys">
+                    {% trans "Filter by County" %}
+                </a>
+            </h6>
+        </div>
+        <div id="collapseCountys" class="panel-collapse collapse">
+            <div class="panel-body">
+                <div class="list-group">
+                    <a class="list-group-item{% if not facets.selected.county %} active{% endif %}" href="{% modify_query 'county' 'page' %}">{% trans "All" %}</a>
+                    {% for cat in facets.categories.county %}
+                        <a class="list-group-item{% if facets.selected.county == cat %} active{% endif %}" href="{% modify_query 'page' county=cat.pk %}">{{ cat }}</a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h6 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion" href="#collapseCountrys">
+                    {% trans "Filter by Country" %}
+                </a>
+            </h6>
+        </div>
+        <div id="collapseCountrys" class="panel-collapse collapse">
+            <div class="panel-body">
+                <div class="list-group">
+                    <a class="list-group-item{% if not facets.selected.country %} active{% endif %}" href="{% modify_query 'country' 'page' %}">{% trans "All" %}</a>
+                    {% for cat in facets.categories.country %}
+                        <a class="list-group-item{% if facets.selected.country == cat %} active{% endif %}" href="{% modify_query 'page' country=cat.pk %}">{{ cat }}</a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="movie_list">
+    {% for movie in object_list %}
+        <div class="movie alert alert-info">
+            <p>{{ movie.title }}</p>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+********************
+base.html
+*******************
+
+{% load staticfiles %}
+
+<head></head>
+
+ <link rel="stylesheet" type="text/css" href="{% static 'search/style.css' %}">
+       <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-   BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    <body>
+        <nav class="navbar navbar-inverse">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="{% url 'search:searchlist' %}">PF Search</a>
+                <div class="collapse navbar-collapse">
+                <ul class="nav navbar-nav">
+                    <li class="">
+                        <a href="{% url 'search:searchtree' %}">
+                            <span class="glypgicon glyphicon-book" aria-hidden="true""></span>&nbsp; Search Tree
+                        </a>
+                    </li>
+                </ul>
+                    <ul class="nav navbar-nav">
+                    <li class="">
+                        <a href="{% url 'search:searchlist' %}">
+                            <span class="glypgicon glyphicon-book" aria-hidden="true""></span>&nbsp; Geography
+                        </a>
+                    </li>
+                    </ul>
+            </div>
+            </div>
+            </nav>
+            {% block content %}
+            {% endblock content %}
+
+                {% block body %}
+                {% endblock %}
+        </body>
+
+
+
+
+
+
+********************
+searchlist.html
+*******************
+
+{% extends 'search/base.html' %}
+{% load widget_tweaks %}
+
+{% block content %}
+<!--
+
+-->
+<form method="get">
+    {{ filter.form.as_p }}
+    <button type="submit">Search</button>
+  </form>
+
+
+
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th>Level</th>
+        <th>Subject</th>
+        <th>University</th>
+        <th>County</th>
+        <th>Country</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for obj in filter.qs %}
+        <tr>
+          <td>{{ obj.level }}</td>
+          <td>{{ obj.TITLE }}</td>
+          <td>{{ obj.UNI_NAME }}</td>
+          <td>{{ obj.county }}</td>
+          <td>{{ obj.country }}</td>
+
+            {% endfor %}
+          </td>
+        </tr>
+    </tbody>
+  </table>
+{% endblock %}

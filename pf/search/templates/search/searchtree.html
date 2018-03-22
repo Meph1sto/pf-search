@@ -1,0 +1,56 @@
+{# templates/search/searchtree.html #}
+{% extends "search/base.html" %}
+{% load staticfiles %}
+{% load i18n %}
+
+{% block sidebar %}
+<div class="filters panel-group" id="accordion">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h6 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion" href="#collapseCounties">
+                    {% trans "Filter by County" %}
+                </a>
+            </h6>
+        </div>
+        <div id="collapseCountys" class="panel-collapse collapse">
+            <div class="panel-body">
+                <div class="list-group">
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h6 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion" href="#collapseCountries">
+                    {% trans "Filter by Country" %}
+                </a>
+            </h6>
+        </div>
+        <div id="collapseCountrys" class="panel-collapse collapse">
+            <div class="panel-body">
+                <div class="list-group">
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="searchtree">
+    {% for search in object_list %}
+        <div class="search alert alert-info">
+            <p>{{ search.level }} {{ search.TITLE }}</p>
+            <p>{{ search.UNI_NAME }}</p>
+            <p>{{ search.county }}, {{ search.country }}</p>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}

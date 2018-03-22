@@ -1,19 +1,48 @@
 {% extends 'search/base.html' %}
-
+{% load widget_tweaks %}
 
 {% block content %}
 <!--
-    <form action="" method="get">
-        {{ filter.form.as_p }}
-        <input type="submit" />
-    </form>
-    {% for obj in filter.qs %}
-        {{ obj.level }} {{ obj.TITLE }}<br />
-    {% endfor %}
+
 -->
 <form method="get">
-    {{ filter.form.as_p }}
-    <button type="submit">Search</button>
+    <div class="well">
+      <div class="row">
+        <div class="form-group col-sm-3 col-md-4">
+          {{ filter.form.level.label_tag }}
+          {% render_field filter.form.level class="form-control" %}
+        </div>
+        <div class="form-group col-sm-6 col-md-8">
+          {{ filter.form.TITLE.label_tag }}
+          {% render_field filter.form.TITLE class="form-control" %}
+        </div>
+        <div class="form-group col-sm-5 col-md-4">
+          {{ filter.form.UNI_NAME.label_tag }}
+          {% render_field filter.form.UNI_NAME class="form-control" %}
+        </div>
+        <div class="form-group col-sm-5 col-md-4">
+          {{ filter.form.county.label_tag }}
+          {% render_field filter.form.county class="form-control" %}
+        </div>
+        <div class="form-group col-sm-5 col-md-4">
+          {{ filter.form.country.label_tag }}
+          {% render_field filter.form.country class="form-control" %}
+        </div>
+        <div class="form-group col-sm-8 col-md-6">
+          {{ filter.form.groups.label_tag }}
+          <div>
+            {% for choice in filter.form.groups %}
+              <label class="checkbox-inline">
+                {{ choice.tag }} {{ choice.choice_label }}
+              </label>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary">
+        <span class="glyphicon glyphicon-search"></span> Search
+      </button>
+    </div>
   </form>
 
 
@@ -36,10 +65,13 @@
           <td>{{ obj.UNI_NAME }}</td>
           <td>{{ obj.county }}</td>
           <td>{{ obj.country }}</td>
-
-            {% endfor %}
           </td>
         </tr>
+    {% empty %}
+        <tr>
+          <td colspan="5">No data</td>
+        </tr>
+    {% endfor %}
     </tbody>
   </table>
 {% endblock %}

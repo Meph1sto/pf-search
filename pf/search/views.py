@@ -7,6 +7,7 @@ from django.http import Http404
 #from django.contrib.auth.models import Search
 from .models import Search, Location, Industry
 from .filters import SearchFilter
+from .forms import SearchFilterForm
 
 # Create your views here.
 
@@ -40,13 +41,6 @@ def detail(request, search_id):
 #    return HttpResponse("<h2> Details for search id:" + str(search_id)+ "</h2>")
     return render(request, 'search/detail.html', {'search':search})
 
-# def search(request):
-#     template = loader.get_template('search/index.html')
-#     all_courses = Search.objects.all()
-#     context = {
-#         'all_courses': all_courses
-#     }
-#     return HttpResponse(template.render(context, request))
 
 def searchlist(request):
     # template = loader.get_template('search/searchlist.html')
@@ -54,3 +48,56 @@ def searchlist(request):
     # all_courses = Search.objects.exclude(id>10)
     course_filter = SearchFilter(request.GET, queryset=all_courses)
     return render(request, 'search/searchlist.html', {'filter': course_filter})
+
+
+def searchtree(request):
+    qs = Search.objects.all()
+    form = SearchFilterForm(data=request.GET)
+    facets = {
+        "selected": {},
+        "categories": {
+            "Level": Search.objects.all(),
+            "Subject": Search.objects.all(),
+            "University": Search.objects.all(),
+            "County": Search.objects.all(),
+            "Country": Search.objects.all(),
+        },
+    }
+
+    if form.is_valid():
+        level = form.cleaned_data["level"]
+        if level:
+            facets["selected"]["Level"] = level
+            qs = qs.filter(levels=level).distinct()
+
+        TITLE = form.cleaned_data["TITLE"]
+        if TITLE:
+            facets["selected"]["Subject"] = TITLE
+            qs = qs.filter(TITLEs=TITLE).distinct()
+
+        UNI_NAME = form.cleaned_data["UNI_NAME"]
+        if UNI_NAME:
+            facets["selected"]["University"] = UNI_NAME
+            qs = qs.filter(UNI_NAMEs=UNI_NAME).distinct()
+
+        county = form.cleaned_data["county"]
+        if county:
+            facets["selected"]["County"] = county
+            qs = qs.filter(countys=county).distinct()
+
+        country = form.cleaned_data["country"]
+        if country:
+            facets["selected"]["Country"] = county
+            qs = qs.filter(countrys=country).distinct()
+
+
+    # # Let's inspect the facets in the console
+    # if settings.DEBUG:
+    #     from pprint import pprint
+    #     pprint(facets)
+    context = {
+        "form": form,
+        "facets": facets,
+        "object_list": qs,
+        }
+    return render(request, "search/searchtree.html", context)

@@ -33,6 +33,7 @@ ALLOWED_HOSTS = ["mephist0.pythonanywhere.com",
 
 INSTALLED_APPS = [
     'search.apps.SearchConfig',
+    'widget_tweaks',
     'django_filters',
     'django.contrib.admin',
     'django.contrib.auth',
