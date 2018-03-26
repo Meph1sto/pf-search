@@ -28,6 +28,7 @@ DEBUG = False
 ALLOWED_HOSTS = ["mephist0.pythonanywhere.com",
                  "127.0.0.1",
                   "https://pf-search-456654.herokuapp.com", 
+                  "pf-search-456654.herokuapp.com"
                   ".herokuapp.com"
                 ]
 
