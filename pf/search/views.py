@@ -11,9 +11,6 @@ from .forms import SearchFilterForm
 
 # Create your views here.
 
-# def index(request):
-#    return HttpResponse("<h>This is the search homepage</h>")
-
 def index(request):
     all_courses = Search.objects.all()[:5]
     context = {
@@ -27,10 +24,6 @@ def index(request):
 
 # 1st header but no list
     return render(request, 'search/index.html', context)
-
-# 2nd working list but no header
-#     return HttpResponse(html)
-
 
 def detail(request, search_id):
     try:
@@ -90,11 +83,6 @@ def searchtree(request):
             facets["selected"]["Country"] = county
             qs = qs.filter(countrys=country).distinct()
 
-
-    # # Let's inspect the facets in the console
-    # if settings.DEBUG:
-    #     from pprint import pprint
-    #     pprint(facets)
     context = {
         "form": form,
         "facets": facets,
