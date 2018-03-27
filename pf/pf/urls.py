@@ -26,8 +26,6 @@ from django_filters.views import object_filter
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    # url(r'^$', TemplateView.as_view(template_name='index.html'), name='index'),
-    # url(r'^search/$', FilterView.as_view(filterset_class=SearchFilter, template_name='search/searchlist.html'), name='searchlist'),
     url(r'^search/', include('search.urls')),
 
 
