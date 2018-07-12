@@ -3,7 +3,7 @@
 """
 Created on Wed Mar 14 22:49:51 2018
 
-@author: robert_heeley
+@author: 
 """
 
 from os import getcwd
