@@ -3,7 +3,6 @@
 """
 Created on Mon Mar 19 14:23:34 2018
 
-@author: robert_heeley
 """
 
 #from django.contrib.auth.models import Search
